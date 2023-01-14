@@ -6,6 +6,8 @@ from utilities import file_in_limits
 
 async def send_facebook_video(update, context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+    print(f"Sending facebook video from {update.message.from_user.username} ({update.message.from_user.id})")
+    print(f"URL: {update.message.text.split(' ')[1]}")
 
     ydl_opts = {
         'quiet': True,
@@ -15,14 +17,13 @@ async def send_facebook_video(update, context):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url=update.message.text.split(" ")[1], download=False)
     caption = f"{info['title']}"
-    
+
     formats = []
     for f in info['formats']:
         if f['ext'] == 'mp4':
             formats.append(f)
 
     file_url = formats[-1]['url']
-    
 
     if not await file_in_limits(file_url):
         file_url = formats[-2]['url']
