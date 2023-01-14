@@ -506,7 +506,7 @@ async def send_vistipuntos(message):
 
 async def vistipuntos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        send_vistipuntos(update.message)
+        await send_vistipuntos(update.message)
         await context.bot.send_photo(chat_id=update.effective_chat.id, photo=open('output.png', 'rb'))
 
 
