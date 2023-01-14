@@ -29,10 +29,10 @@ async def send_facebook_video(update, context):
     logger.debug(f"File url: {file_url}")
     if not await file_in_limits(file_url):
         file_url = formats[-2]['url']
-        logger.debug(f"File url: {file_url}")
+        await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')
     if await file_in_limits(file_url):
         logger.debug(f"the file is in limits")
-        await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')
+        await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')    
     else:
         logger.debug(f"File size: {formats[-2]['filesize']}")
         await update.message.reply_html(f"El video es muy grande y no puedo subirlo, pero <a href='{file_url}'>si haces clic aca</a> lo podrás ver en el navegador. Es una mierda de solucion pero es lo que tengo para ofrecer por el momento.")
