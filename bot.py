@@ -2,8 +2,7 @@ from __future__ import unicode_literals
 from PIL import Image, ImageDraw, ImageFont
 import re, requests, json, random,random, os
 import datetime as dt
-import logging
-import loguru
+import loguru as logger
 from typing import Optional, Tuple
 
 from telegram import __version__ as TG_VER
@@ -20,9 +19,6 @@ from tiktok import send_tiktok_video
 from utilities import delete_msg, restart_bot
 #import modulox.wayback  as wayback
 
-
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
-logger = logging.getLogger(__name__)
 if not os.path.exists(f"{config.main_directory}/db"):
     os.makedirs(f"{config.main_directory}/db")
 
@@ -34,7 +30,7 @@ try:
     L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
     L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
 except Exception as e:
-    loguru.logger.error(f"Error al cargar la sesión de Instagram: {e}")
+    logger.error(f"Error al cargar la sesión de Instagram: {e}")
     pass
     
 
