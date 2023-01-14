@@ -9,8 +9,8 @@ async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         if not "settings" in context.chat_data:
             context.chat_data["settings"] = {
                 "tiktokv": "✅",
-                "instagramp": "✅",
-                "stories": "✅",
+                "instagramp": "❌",
+                "stories": "❌",
                 "att": "✅",
                 "facebookv": "✅",
             }
