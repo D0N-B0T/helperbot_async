@@ -501,8 +501,8 @@ async def send_vistipuntos(message):
     else:   
         px, py = 370, 230
     sx, sy = image2.size
-    img.paste(image2, (px, py, px + sx, py + sy), image2)
-    img.save('output.png')
+    await img.paste(image2, (px, py, px + sx, py + sy), image2)
+    await img.save('output.png')
 
 async def vistipuntos(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
