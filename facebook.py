@@ -32,7 +32,7 @@ async def send_facebook_video(update, context):
     logger.debug(f"File url: {file_url}")  
     
     file_name = str(uuid.uuid4())+".mp4"
-    await FileDownload().download_video(file_url, TMP_FOLDER, file_name)
+    FileDownload().download_video(file_url, TMP_FOLDER, file_name)
     logger.debug(f"File name downloaded: {file_name}")
     
 
