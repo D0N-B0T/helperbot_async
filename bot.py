@@ -6,7 +6,7 @@ import logging
 from typing import Optional, Tuple
 from telegram import __version__ as TG_VER
 import yt_dlp
-import modulox.wayback  as wayback
+#import modulox.wayback  as wayback
 import os
 import random
 from telegram import InputMediaPhoto, InputMediaVideo, Update, constants
