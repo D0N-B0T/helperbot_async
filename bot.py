@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from PIL import Image, ImageDraw, ImageFont
 import re, requests, json, random,random, os
 import datetime as dt
-import loguru as logger
+from loguru import logger
 from typing import Optional, Tuple
 
 from telegram import __version__ as TG_VER
@@ -30,7 +30,8 @@ try:
     L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
     L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
 except Exception as e:
-    logger.info(f"Error al cargar la sesión de Instagram: {e}", e=e)
+    logger.error(e)
+
 
 
 # = ============================  bienvenida ============================ #
