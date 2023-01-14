@@ -14,7 +14,9 @@ TMP_FOLDER = "tmp/"
 async def send_facebook_video(update, context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
     logger.debug(f"Sending facebook video from {update.message.from_user.username} ({update.message.from_user.id})")
-    ydl_opts = {'outtmpl': f'{TMP_FOLDER}%(id)s.%(ext)s', 'quiet': True, 'no_warnings': True, 'format': 'mp4'}
+    
+    ydl_opts = {'outtmpl': '%(id)s.%(ext)s'}
+    
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url=update.message.text.split(" ")[1], download=False)
         
@@ -27,6 +29,9 @@ async def send_facebook_video(update, context):
             
     logger.debug(f"Formats: {formats}")
     file_url = formats[-1]['url']
+    #cut after .mp4 is found
+    file_url = file_url[:file_url.find('.mp4')+4]
+    
     logger.debug(f"File url: {file_url}")
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([file_url])
