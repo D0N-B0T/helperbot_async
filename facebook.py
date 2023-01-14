@@ -31,7 +31,7 @@ async def send_facebook_video(update, context):
         file_url = formats[-2]['url']
         logger.debug(f"File url: {file_url}")
     if await file_in_limits(file_url):
-        logger.debug(f"File size: {formats[-1]['filesize']}")
+        logger.debug(f"the file is in limits")
         await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')
     else:
         logger.debug(f"File size: {formats[-2]['filesize']}")
