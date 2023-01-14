@@ -265,6 +265,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # TWITTER
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
             await send_twitter_video(update, context)
+        
+        
 
             
 # add command
