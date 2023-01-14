@@ -120,27 +120,6 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 
-# ============================  experimental ============================ #
-
-
-async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Shows which chats the bot is in"""
-    user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
-    group_ids = ", ".join(str(gid) for gid in context.bot_data.setdefault("group_ids", set()))
-    channel_ids = ", ".join(str(cid) for cid in context.bot_data.setdefault("channel_ids", set()))
-    text = (
-        f"@{context.bot.username} is currently in:\n"
-        f"{len(context.bot_data['channel_ids'])} channels, \n"
-        f"{len(context.bot_data['group_ids'])} groups, \n"
-        f"{len(context.bot_data['user_ids'])} private chats, \n"
-        f"Private chat with: {user_ids} \n"
-        f"Group IDs: {group_ids} \n"
-        f"Channel IDs: {channel_ids}.\n"
-    )
-    await update.effective_message.reply_text(text)
-
-
-# ======================================================== #
 
 # twitter to nitter        
         
@@ -525,11 +504,35 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text.replace('/say ', ''))
         await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=update.message.message_id)
 
-# ===============================================================================================================
 
-if __name__ == '__main__':
-    
-    
+# ============================  experimental ============================ #
+
+
+async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Shows which chats the bot is in"""
+    user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
+    group_ids = ", ".join(str(gid) for gid in context.bot_data.setdefault("group_ids", set()))
+    channel_ids = ", ".join(str(cid) for cid in context.bot_data.setdefault("channel_ids", set()))
+    text = (
+        f"@{context.bot.username} is currently in:\n"
+        f"{len(context.bot_data['channel_ids'])} channels, \n"
+        f"{len(context.bot_data['group_ids'])} groups, \n"
+        f"{len(context.bot_data['user_ids'])} private chats, \n"
+        f"Private chat with: {user_ids} \n"
+        f"Group IDs: {group_ids} \n"
+        f"Channel IDs: {channel_ids}.\n"
+    )
+    await update.effective_message.reply_text(text)
+
+
+# ======================================================== #
+
+
+
+
+# =======================================================================================
+
+if __name__ == '__main__':    
     link_downloader_handler = MessageHandler(filters.TEXT, link_downloader)
     application.add_handler(link_downloader_handler)
     
@@ -687,8 +690,14 @@ if __name__ == '__main__':
     application.add_handler(send_say_handler, 51)
     
     
+    
+    show_chats_handler = CommandHandler('show_chats', show_chats)
+    application.add_handler(show_chats_handler, 52)
+    
+    
+    #application.add_handler(CommandHandler("show_chats", show_chats))
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
-    application.add_handler(CommandHandler("show_chats", show_chats))
+
 
     # Handle members joining/leaving chats.
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
