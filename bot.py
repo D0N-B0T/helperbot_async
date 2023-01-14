@@ -30,9 +30,8 @@ try:
     L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
     L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
 except Exception as e:
-    logger.error(f"Error al cargar la sesión de Instagram: {e}")
+    logger.debug("No se pudo cargar la sesión de Instagram: {e}")
     pass
-    
 
 
 # = ============================  bienvenida ============================ #
