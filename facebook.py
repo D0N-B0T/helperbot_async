@@ -34,13 +34,11 @@ async def send_facebook_video(update, context):
     file_name = str(uuid.uuid4())+".mp4"
     FileDownload().download_video(file_url, TMP_FOLDER, file_name)
     logger.debug(f"File name downloaded: {file_name}")
-    
-
-               
-    
+    await update.message.reply_video(video="tmp/"+file_name, caption=caption[:1000], parse_mode='HTML') 
+    #this is a check to see if the file is too big to be sent
     if not await file_in_limits(file_url):
         file_url = formats[-2]['url']
-        
+    #if file is not too big, send it
     if await file_in_limits(file_url):
         await update.message.reply_video(video="tmp/"+file_name, caption=caption[:1000], parse_mode='HTML') 
     else:
