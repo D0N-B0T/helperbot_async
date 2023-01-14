@@ -1,37 +1,39 @@
 import yt_dlp
 from telegram import constants
 from loguru import logger
+import uuid
 
 from utilities import file_in_limits
 
+
+
 name = "youtube_dl"
 TMP_FOLDER = "tmp/"
-ydl_opts = {'outtmpl': f'{TMP_FOLDER}%(id)s.%(ext)s', 'quiet': True, 'no_warnings': True, 'format': 'mp4'}
+
     
 async def send_facebook_video(update, context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
     logger.debug(f"Sending facebook video from {update.message.from_user.username} ({update.message.from_user.id})")
-    ydl_opts = {
-        'quiet': True,
-        'no_warnings': True,
-        'format': 'mp4'
-    }
+    ydl_opts = {'outtmpl': f'{TMP_FOLDER}%(id)s.%(ext)s', 'quiet': True, 'no_warnings': True, 'format': 'mp4'}
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url=update.message.text.split(" ")[1], download=False)
+        
     caption = f"{info['title']}"
     logger.debug(f"Video title: {info['title']}")
     formats = []
     for f in info['formats']:
         if f['ext'] == 'mp4':
             formats.append(f)
+            
     logger.debug(f"Formats: {formats}")
     file_url = formats[-1]['url']
     logger.debug(f"File url: {file_url}")
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([file_url])
+    
     if not await file_in_limits(file_url):
         file_url = formats[-2]['url']
-        await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')
     if await file_in_limits(file_url):
-        logger.debug(f"the file is in limits")
         await update.message.reply_video(video=file_url, caption=caption[:1000], parse_mode='HTML')    
     else:
         logger.debug(f"File size: {formats[-2]['filesize']}")
@@ -58,3 +60,5 @@ async def send_facebook_video(update, context):
 #     if info.get('is_live', False):
 #         logger.warning("Live streaming media, not archiving now")
 #         return False
+
+
