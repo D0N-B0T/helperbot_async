@@ -37,7 +37,10 @@ async def send_facebook_video(update, context):
     
     logger.debug(f"File name downloaded: {file_name}")
        
-    await update.message.reply_video(video="tmp/"+file_name, caption=caption[:1000], parse_mode='HTML') 
+    try:
+        await update.message.reply_video(video="tmp/"+file_name, caption=caption[:1000], parse_mode='HTML') 
+    except Exception as e:
+        logger.debug(f"Error: {e}")
     #this is a check to see if the file is too big to be sent
     # if not await file_in_limits(file_url):
     #     file_url = formats[-2]['url']
