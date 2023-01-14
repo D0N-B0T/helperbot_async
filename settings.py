@@ -4,7 +4,7 @@ from telegram.ext import ContextTypes
 #from transmission_torrent import get_torrent_list
 
 
-async def settings(update: Update) -> None:
+async def settings(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         if not "settings" in context.chat_data:
             context.chat_data["settings"] = {
@@ -63,7 +63,7 @@ async def settings(update: Update) -> None:
         print(e)
 
 
-async def settings_button(update: Update) -> None:
+async def settings_button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         query = update.callback_query
 

@@ -1,27 +1,23 @@
 from __future__ import unicode_literals
 from PIL import Image, ImageDraw, ImageFont
-import re, requests, json, random
+import re, requests, json, random,random, os
 import datetime as dt
 import logging
 from typing import Optional, Tuple
+
 from telegram import __version__ as TG_VER
-import yt_dlp
-#import modulox.wayback  as wayback
-import os
-import random
-from telegram import InputMediaPhoto, InputMediaVideo, Update, constants
-from telegram.ext import (ApplicationBuilder, CallbackQueryHandler,CommandHandler, ContextTypes, InlineQueryHandler,MessageHandler, PicklePersistence, filters)
-from telegram import ChatMemberLeft, ChatMemberUpdated, User
+from telegram.ext import (ApplicationBuilder,MessageHandler, PicklePersistence, filters)
 from telegram import Chat, ChatMember, ChatMemberUpdated, Update
 from telegram.constants import ParseMode
-from telegram.ext import Application, ChatMemberHandler, CommandHandler, ContextTypes
+from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 
 import config
 from twitter import send_twitter_video
 from facebook import send_facebook_video
 from settings import settings, settings_button
-from tiktok import inline_tiktok_download, send_tiktok_video
+from tiktok import send_tiktok_video
 from utilities import delete_msg, restart_bot
+#import modulox.wayback  as wayback
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
@@ -695,7 +691,7 @@ if __name__ == '__main__':
     application.add_handler(show_chats_handler, 52)
     
     
-    #application.add_handler(CommandHandler("show_chats", show_chats))
+    application.add_handler(CommandHandler("show_chats", show_chats))
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
 
 
