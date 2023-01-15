@@ -26,11 +26,11 @@ persistence = PicklePersistence(filepath=f'{config.main_directory}/db/persistenc
 application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persistence).build()
 
 
-try:
-    L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
-    L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
-except Exception as e:
-    logger.error(e)
+# try:
+#     L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
+#     L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
+# except Exception as e:
+#     logger.error(e)
 
 
 
@@ -179,7 +179,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 shortcode = split_instagram_url[4]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
-                    await os.system(f'bash yt-dlp/yt-dlp.sh "' + update.message.text +' -o {shortcode}.mp4"'.format(shortcode=shortcode))
+                    await os.system('bash yt-dlp/yt-dlp.sh '+ update.message.text +' -o '+shortcode+'.mp4')
                 except Exception as e:
                     logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
                     return
@@ -236,10 +236,10 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 media_id = split_instagram_url[5]
                 logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
                 try:
-                    await os.system(f'bash yt-dlp/yt-dlp.sh "' + update.message.text +' -o {media_id}.mp4"'.format(media_id=media_id))
+                    await os.system('bash yt-dlp/yt-dlp.sh '+ split_instagram_url +' -o '+media_id+'.mp4')
                 except Exception as e:
                     logger.error(e)
-                    await update.message.reply_text("No se pudo descargar el vide, {e}")
+                    await update.message.reply_text("No se pudo descargar el video, {e}")
                     return
                 
 
