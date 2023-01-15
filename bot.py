@@ -179,7 +179,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 shortcode = split_instagram_url[4]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
-                    await os.system('bash insta-dl/insta-dl.sh "' + update.message.text + '"')
+                    await os.system(f'bash yt-dlp/yt-dlp.sh "' + update.message.text +' -o {shortcode}.mp4"'.format(shortcode=shortcode))
                 except Exception as e:
                     logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
                     return
@@ -236,7 +236,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 media_id = split_instagram_url[5]
                 logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
                 try:
-                    await os.system('bash insta-dl/insta-dl.sh "' + update.message.text + '"')
+                    await os.system(f'bash yt-dlp/yt-dlp.sh "' + update.message.text +' -o {media_id}.mp4"'.format(media_id=media_id))
                 except Exception as e:
                     logger.error(e)
                     await update.message.reply_text("No se pudo descargar el vide, {e}")
