@@ -174,10 +174,12 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
             if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
-                #mensaje "/video https://www.instagram.com/p/"
-                url = update.message.text[1]
-                os.system('bash yt-dlp/yt-dlp.sh '+ url)
-                await update.message.reply_video(video=url, parse_mode='HTML')
+                
+                #separate into 2 parts, deleting /video and saving the url in url variable
+                print(update.message.text)                
+                
+                #os.system('bash yt-dlp/yt-dlp.sh '+ url)
+                #await update.message.reply_video(video=url, parse_mode='HTML')
 
                 
                 
