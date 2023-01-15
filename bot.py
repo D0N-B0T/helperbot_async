@@ -4,6 +4,7 @@ import re, requests, json, random,random, os
 import datetime as dt
 from loguru import logger
 from typing import Optional, Tuple
+import subprocess
 
 from telegram import __version__ as TG_VER
 from telegram.ext import (ApplicationBuilder,MessageHandler, PicklePersistence, filters)
@@ -163,8 +164,6 @@ async def usd_to_clp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    twitter_Regex = "(?:(?:http|https):\/\/)?(?:www.|m.|mobile.)?(?:twitter.com|twtr.com)\/(\w+)"
-
     # TIKTOK
     if update.message:       
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
@@ -179,7 +178,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 shortcode = split_instagram_url[4]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
-                    await os.system('bash yt-dlp/yt-dlp.sh '+ update.message.text +' -o '+shortcode+'.mp4')
+                    #comando = 'bash yt-dlp/yt-dlp.sh '+ update.message.text +' -o '+shortcode+'.mp4'
+                    os.system('bash yt-dlp/yt-dlp.sh '+ update.message.text +' -o '+shortcode+'.mp4')
                 except Exception as e:
                     logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
                     return
