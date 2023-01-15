@@ -176,10 +176,9 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 url = update.message.text.split(" ")[1]                
                 #separate into 2 parts, deleting /video and saving the url in url variable
-                print(url)
                 
-                #os.system('bash yt-dlp/yt-dlp.sh '+ url)
-                #await update.message.reply_video(video=url, parse_mode='HTML')
+                os.system('bash yt-dlp/yt-dlp.sh '+ url)
+                await update.message.reply_video(video=url, parse_mode='HTML')
 
                 
                 
