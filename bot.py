@@ -172,52 +172,60 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await send_tiktok_video(update, context)
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
-            # no funciona
             await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
             if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
-                
                 split_instagram_url = update.message.text.split("?")[0].split("/")
                 shortcode = split_instagram_url[4]
-                post = instaloader.Post.from_shortcode(L.context, shortcode)
-                username = post.owner_username
-                if post.caption:
-                    if len(post.caption) > 200:
-                        description = post.caption[:200] + "..."
-                    else:
-                        description = post.caption
-                else:
-                    description = ""
+                logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
+                try:
+                    await os.system('bash insta-dl/insta-dl.sh "' + update.message.text + '"')
+                except Exception as e:
+                    logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
+                    return
 
-                if post.typename == "GraphImage":
-                    url = post.url
-                    await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}\n{description}")
+                     
+    
+                #post = instaloader.Post.from_shortcode(L.context, shortcode)
+                #username = post.owner_username
+                
+                # if post.caption:
+                #     if len(post.caption) > 200:
+                #         description = post.caption[:200] + "..."
+                #     else:
+                #         description = post.caption
+                # else:
+                #     description = ""
 
-                elif post.typename == "GraphVideo":
-                    url = post.video_url
-                    await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}\n{description}")
+                # if post.typename == "GraphImage":
+                #     url = post.url
+                #     await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}\n{description}")
 
-                elif post.typename == "GraphSidecar":
-                    medialist = []
-                    for p in post.get_sidecar_nodes():
-                        if p.is_video:
-                            medialist.append(
-                                InputMediaVideo(
-                                    media=p.video_url,
-                                    caption=f"@{username}\n{description}",
-                                    parse_mode='HTML'
-                                )
-                            )
-                        else:
-                            medialist.append(
-                                InputMediaPhoto(
-                                    media=p.display_url,
-                                    caption=f"@{username}\n{description}",
-                                    parse_mode='HTML'
-                                )
-                            )
-                    await update.message.reply_media_group(media=medialist)
-                    await update.message.reply_text(f"@{username}\n{description}")
+                # elif post.typename == "GraphVideo":
+                #     url = post.video_url
+                #     await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}\n{description}")
+
+                # elif post.typename == "GraphSidecar":
+                #     medialist = []
+                #     for p in post.get_sidecar_nodes():
+                #         if p.is_video:
+                #             medialist.append(
+                #                 InputMediaVideo(
+                #                     media=p.video_url,
+                #                     caption=f"@{username}\n{description}",
+                #                     parse_mode='HTML'
+                #                 )
+                #             )
+                #         else:
+                #             medialist.append(
+                #                 InputMediaPhoto(
+                #                     media=p.display_url,
+                #                     caption=f"@{username}\n{description}",
+                #                     parse_mode='HTML'
+                #                 )
+                #             )
+                #     await update.message.reply_media_group(media=medialist)
+                #     await update.message.reply_text(f"@{username}\n{description}")
 
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
             await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
@@ -225,27 +233,39 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 
                 split_instagram_url = update.message.text.split("?")[0].split("/")
-
                 media_id = split_instagram_url[5]
-                story = instaloader.StoryItem.from_mediaid(
-                    L.context, int(media_id))
+                logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
+                try:
+                    await os.system('bash insta-dl/insta-dl.sh "' + update.message.text + '"')
+                except Exception as e:
+                    logger.error(e)
+                    await update.message.reply_text("No se pudo descargar el vide, {e}")
+                    return
+                
 
-                if story.is_video:
-                    url = story.video_url
-                    username = story.owner_username
-                    await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}")
-                else:
-                    url = story.url
-                    username = story.owner_username
-                    await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}")
+                
+                #story = instaloader.StoryItem.from_mediaid(
+                #    L.context, int(media_id))
+
+                # if story.is_video:
+                #     url = story.video_url
+                #     username = story.owner_username
+                #     await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}")
+                # else:
+                #     url = story.url
+                #     username = story.owner_username
+                #     await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}")
 
         # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/", "/video https://www.facebook.com/reel/")):
             await send_facebook_video(update, context)
+     
+             
         
         # TWITTER
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
             await send_twitter_video(update, context)
+            
         
         
 
