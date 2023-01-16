@@ -221,6 +221,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     logger.info(f"Downloading instagram post {url}")
                     os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
                     titulo = os.system('curl -L '+url+'|grep -oP "(?<=<title>)[^<]+"')
+                    titulo = titulo.plit("0")[1]
     
                     await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'), caption=titulo)
 
