@@ -234,19 +234,19 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 #     await update.message.reply_text(f"@{username}\n{description}")
 
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
-            await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
-            if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
-                await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+            await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
+            # if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
+            #     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 
-                split_instagram_url = update.message.text.split("?")[0].split("/")
-                media_id = split_instagram_url[5]
-                logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
-                try:
-                    await os.system('bash yt-dlp/yt-dlp.sh '+ split_instagram_url +' -o '+media_id+'.mp4')
-                except Exception as e:
-                    logger.error(e)
-                    await update.message.reply_text("No se pudo descargar el video, {e}")
-                    return
+            #     split_instagram_url = update.message.text.split("?")[0].split("/")
+            #     media_id = split_instagram_url[5]
+            #     logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
+            #     try:
+            #         await os.system('bash yt-dlp/yt-dlp.sh '+ split_instagram_url +' -o '+media_id+'.mp4')
+            #     except Exception as e:
+            #         logger.error(e)
+            #         await update.message.reply_text("No se pudo descargar el video, {e}")
+            #         return
                 
 
                 
