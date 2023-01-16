@@ -308,7 +308,8 @@ async def send_guatona(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_senales(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open('audio/SEÑALES.mp3', 'rb'))
+        if update.message.text == '/senales':
+            await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open('audio/SEÑALES.mp3', 'rb'))
         
 
 async def send_yquemeimportaami(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -582,7 +583,10 @@ if __name__ == '__main__':
     send_guatona_handler = CommandHandler('guatona', send_guatona)
     application.add_handler(send_guatona_handler, 17)
     
-    send_senales_handler = CommandHandler('señales', send_senales)
+    #  = CommandHandler('señales', send_senales)
+    # application.add_handler(send_senales_handler, 18)
+    
+    send_senales_handler = MessageHandler(filters.TEXT, send_senales)
     application.add_handler(send_senales_handler, 18)
     
     send_yquemeimportaami_handler = CommandHandler('yquemeimportaami', send_yquemeimportaami)
