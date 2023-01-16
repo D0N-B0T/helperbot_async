@@ -581,7 +581,7 @@ if __name__ == '__main__':
     send_guatona_handler = CommandHandler('guatona', send_guatona)
     application.add_handler(send_guatona_handler, 17)
     
-    send_senales_handler = CommandHandler('senales', send_senales)
+    send_senales_handler = CommandHandler('señales', send_senales)
     application.add_handler(send_senales_handler, 18)
     
     send_yquemeimportaami_handler = CommandHandler('yquemeimportaami', send_yquemeimportaami)
