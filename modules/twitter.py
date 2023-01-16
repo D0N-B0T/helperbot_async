@@ -1,7 +1,7 @@
 import yt_dlp
 from telegram import constants
 
-from utilities import file_in_limits
+from modules.utilities import file_in_limits
 
 async def send_twitter_video(update, context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)

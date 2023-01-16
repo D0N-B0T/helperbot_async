@@ -3,7 +3,7 @@ from telegram import constants
 from loguru import logger
 import uuid
 
-from utilities import file_in_limits
+from modules.utilities import file_in_limits
 
 from video import FileDownload
 

@@ -10,7 +10,7 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 import config
-from utilities import file_in_limits
+from modules.utilities import file_in_limits
 
 
 async def get_tiktok_video_infos(username: str, video_ID: str) -> dict:
