@@ -219,7 +219,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
                     logger.info(f"Downloading instagram post {url}")
-                    os.system(comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                    os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
                     await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
 
                     
@@ -236,10 +236,10 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             #await send_facebook_video(update, context)
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
-            shortcode = url.split("/")[4]
+            shortcode = url.split("/")[3]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system(comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
                 await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
                 
                 
