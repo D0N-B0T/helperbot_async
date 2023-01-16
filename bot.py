@@ -13,11 +13,12 @@ from telegram.constants import ParseMode
 from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 
 import config
+from utilities import delete_msg, restart_bot
+from settings import settings, settings_button
 from twitter import send_twitter_video
 from facebook import send_facebook_video
-from settings import settings, settings_button
 from tiktok import send_tiktok_video
-from utilities import delete_msg, restart_bot
+
 #import modulox.wayback  as wayback
 
 if not os.path.exists(f"{config.main_directory}/db"):
@@ -25,15 +26,6 @@ if not os.path.exists(f"{config.main_directory}/db"):
 
 persistence = PicklePersistence(filepath=f'{config.main_directory}/db/persistence.pkl')
 application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persistence).build()
-
-
-# try:
-#     L = instaloader.Instaloader(dirname_pattern=f"{config.main_directory}/instagram/", iphone_support=False, save_metadata=False)
-#     L.load_session_from_file(config.IG_USER, f"{config.main_directory}/session-{config.IG_USER}")
-# except Exception as e:
-#     logger.error(e)
-
-
 
 # = ============================  bienvenida ============================ #
 logger.info("Bot iniciado")
@@ -188,19 +180,19 @@ def checkDivisas(mensaje):
 
 async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        specific_symbol = update.message.text.strip('/')
-        if checkDivisas(specific_symbol):
-            response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
-            logger.info("Estado de la API: " + str(response.status_code))
-            data = response.json()
+        with open('symbols.txt', 'r') as r:
+            if update.message.text.startswith("/"+r.read().strip()):
+                response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
+                logger.info("Estado de la API: " + str(response.status_code))
+                data = response.json()
 
-            for item in data:
-                if item["symbol"] == specific_symbol:
-                    symbol = item['symbol']
-                    timestamp = dt.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
-                    last = item['last']
-                    high = item['high']
-            await update.message.reply_text('<b>'+symbol+'</b>'+'\n'+'Último: $'+str(last)+'\n'+'Máximo: $'+str(high)+'\n'+'Hora: '+str(timestamp)+'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
+                for item in data:
+                    if item["symbol"] == update.message.text.strip():
+                        symbol = item['symbol']
+                        timestamp = dt.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
+                        last = item['last']
+                        high = item['high']
+                await update.message.reply_text('<b>'+symbol+'</b>'+'\n'+'Último: $'+str(last)+'\n'+'Máximo: $'+str(high)+'\n'+'Hora: '+str(timestamp)+'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
     else:
         logger.error("Hay un problema con la funcion checkDivisas()")
         pass
@@ -221,7 +213,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await send_tiktok_video(update, context)
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
-            await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
+            #await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
             if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 url = update.message.text.split(" ")[1]                
@@ -241,77 +233,9 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
 
                      
-    
-                #post = instaloader.Post.from_shortcode(L.context, shortcode)
-                #username = post.owner_username
-                
-                # if post.caption:
-                #     if len(post.caption) > 200:
-                #         description = post.caption[:200] + "..."
-                #     else:
-                #         description = post.caption
-                # else:
-                #     description = ""
-
-                # if post.typename == "GraphImage":
-                #     url = post.url
-                #     await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}\n{description}")
-
-                # elif post.typename == "GraphVideo":
-                #     url = post.video_url
-                #     await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}\n{description}")
-
-                # elif post.typename == "GraphSidecar":
-                #     medialist = []
-                #     for p in post.get_sidecar_nodes():
-                #         if p.is_video:
-                #             medialist.append(
-                #                 InputMediaVideo(
-                #                     media=p.video_url,
-                #                     caption=f"@{username}\n{description}",
-                #                     parse_mode='HTML'
-                #                 )
-                #             )
-                #         else:
-                #             medialist.append(
-                #                 InputMediaPhoto(
-                #                     media=p.display_url,
-                #                     caption=f"@{username}\n{description}",
-                #                     parse_mode='HTML'
-                #                 )
-                #             )
-                #     await update.message.reply_media_group(media=medialist)
-                #     await update.message.reply_text(f"@{username}\n{description}")
-
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
             await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
-            # if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
-            #     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
-                
-            #     split_instagram_url = update.message.text.split("?")[0].split("/")
-            #     media_id = split_instagram_url[5]
-            #     logger.info(f"Downloading instagram story {split_instagram_url} with media id {media_id}")
-            #     try:
-            #         await os.system('bash yt-dlp/yt-dlp.sh '+ split_instagram_url +' -o '+media_id+'.mp4')
-            #     except Exception as e:
-            #         logger.error(e)
-            #         await update.message.reply_text("No se pudo descargar el video, {e}")
-            #         return
-                
-
-                
-                #story = instaloader.StoryItem.from_mediaid(
-                #    L.context, int(media_id))
-
-                # if story.is_video:
-                #     url = story.video_url
-                #     username = story.owner_username
-                #     await update.message.reply_video(video=url, parse_mode='HTML', caption=f"@{username}")
-                # else:
-                #     url = story.url
-                #     username = story.owner_username
-                #     await update.message.reply_photo(photo=url, parse_mode='HTML', caption=f"@{username}")
-
+            
         # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/", "/video https://www.facebook.com/reel/")):
             await send_facebook_video(update, context)
@@ -602,12 +526,6 @@ async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     )
     await update.effective_message.reply_text(text)
 
-
-# ======================================================== #
-
-
-
-
 # =======================================================================================
 
 if __name__ == '__main__':    
@@ -616,9 +534,6 @@ if __name__ == '__main__':
     
     divisas_handler = MessageHandler(filters.TEXT, divisas)
     application.add_handler(divisas_handler)
-    
-    # video_downloader = CommandHandler('video', link_downloader) 
-    # application.add_handler(video_downloader, 1)
     
     help_handler = CommandHandler('help', help)
     application.add_handler(help_handler, 4)
@@ -771,23 +686,14 @@ if __name__ == '__main__':
     application.add_handler(send_say_handler, 51)
     
     
-    
     show_chats_handler = CommandHandler('show_chats', show_chats)
     application.add_handler(show_chats_handler, 52)
-    
-    
+        
     application.add_handler(CommandHandler("show_chats", show_chats))
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
 
 
-    # Handle members joining/leaving chats.
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
 
-
-    #use wayback from modulox (not working)
-    #application.add_handler(CommandHandler("wayback", wayback))
-    
-
-    
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
