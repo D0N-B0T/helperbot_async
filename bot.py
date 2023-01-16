@@ -211,7 +211,6 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await send_tiktok_video(update, context)
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
-            #await update.message.reply_text("Por el momento no puedo bajar videos de instagram 😥")
             if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 url = update.message.text.split(" ")[1]                
@@ -223,7 +222,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     url = update.message.text[1]
                     logger.info(f"Downloading instagram post {url}")
                     os.system(comando)
-                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
+                    titulo = os.system('curl -L '+url+'|grep -oP "(?<=<title>)[^<]+"')
+                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'), caption=titulo)
 
                     
                 except Exception as e:
