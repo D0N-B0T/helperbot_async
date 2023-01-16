@@ -689,6 +689,9 @@ if __name__ == '__main__':
     show_chats_handler = CommandHandler('show_chats', show_chats)
     application.add_handler(show_chats_handler, 52)
         
+    send_sapo_handler = CommandHandler('sapo', send_sapo)
+    application.add_handler(send_sapo_handler, 53)
+        
     application.add_handler(CommandHandler("show_chats", show_chats))
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
 
