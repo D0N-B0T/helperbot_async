@@ -183,6 +183,9 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     url = update.message.text[1]
                     logger.info(f"Downloading instagram post {url}")
                     os.system(comando)
+                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
+
+                    
                 except Exception as e:
                     logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
                     return
