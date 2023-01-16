@@ -216,7 +216,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
                 url = update.message.text.split(" ")[1]                
                 split_instagram_url = update.message.text.split("?")[0].split("/")
-                shortcode = split_instagram_url[4]
+                shortcode = split_instagram_url[5]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
                     comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4'
