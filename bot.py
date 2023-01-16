@@ -218,12 +218,11 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 shortcode = split_instagram_url[5]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
+                    comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4'
+                    url = update.message.text[1]
                     logger.info(f"Downloading instagram post {url}")
-                    os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
-                    titulo = os.system('curl -L '+url+'|grep -oP "(?<=<title>)[^<]+"')
-                    titulo = titulo.plit("0")[1]
-    
-                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'), caption=titulo)
+                    os.system(comando)
+                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
 
                     
                 except Exception as e:
