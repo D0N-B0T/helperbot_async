@@ -161,6 +161,33 @@ async def usd_to_clp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         dia = now.strftime("%d %B")
         hp = data[0]['hp']
         await update.message.reply_text('<b>USD CLP</b> ' + str(price) + flecha +'\n' +'Máxima: $' +str(hp)+'\n'  + signo + str(var) + '  ('+signo+str(varper)+'%)'+ '\n'+ str(dia) +', '+str(hora) +'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
+       
+       
+
+       
+import requests
+import datetime
+
+
+async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        r = requests.get("https://www.cryptomkt.com/api/landing/ticker").json()
+        logger.info(r)
+        for item in r:
+            if item["symbol"] == update.message.text:
+                symbol = item['symbol']
+                timestamp = datetime.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
+                last = item['last']
+                high = item['high']
+                await update.message.reply_text(f"{symbol} \nÚltimo precio: {last} \nMáximo: {high} \nHora: {timestamp}")
+            else:
+                logger.error("No se encontró la moneda")
+                await update.message.reply_text("No se encontró la moneda")
+                pass
+                
+                
+                
+        
         
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
