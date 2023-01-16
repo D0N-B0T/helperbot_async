@@ -218,10 +218,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 shortcode = split_instagram_url[5]
                 logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
                 try:
-                    comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4'
-                    url = update.message.text[1]
                     logger.info(f"Downloading instagram post {url}")
-                    os.system(comando)
+                    os.system(comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
                     await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
 
                     
@@ -235,7 +233,22 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
         # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/", "/video https://www.facebook.com/reel/")):
-            await send_facebook_video(update, context)
+            #await send_facebook_video(update, context)
+            await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+            url = update.message.text.split(" ")[1]
+            shortcode = url.split("/")[4]
+            logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
+            try:
+                os.system(comando = 'bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
+                
+                
+            except Exception as e:
+                logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
+                return
+                
+                
+            
      
              
         
