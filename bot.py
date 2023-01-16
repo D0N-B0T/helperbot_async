@@ -308,7 +308,7 @@ async def send_guatona(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def send_senales(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        if update.message.text == '/senales':
+        if update.message.text.startswith(("/señales")):
             await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open('audio/SEÑALES.mp3', 'rb'))
         
 
@@ -539,10 +539,8 @@ if __name__ == '__main__':
     
     help_handler = CommandHandler('help', help)
     application.add_handler(help_handler, 4)
-
-
     
-    
+
     addcomand_handler = CommandHandler('addcomand', add_command)
     application.add_handler(addcomand_handler, 2)
     
