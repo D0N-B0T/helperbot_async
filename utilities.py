@@ -15,12 +15,6 @@ def is_bot_admin(user_id):
         return False
 
 
-async def restart_bot(update: Update):  
-    await update.message.reply_text("Restarting...")
-    args = sys.argv[:]
-    args.insert(0, sys.executable)
-    os.chdir(os.getcwd())
-    os.execv(sys.executable, args)
 
 try:
     async def delete_msg(update: Update, context: ContextTypes.DEFAULT_TYPE):

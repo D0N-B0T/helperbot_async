@@ -4,17 +4,14 @@ import re, requests, json, random,random, os
 import datetime as dt
 from loguru import logger
 from typing import Optional, Tuple
-import subprocess
 import requests
 from telegram import __version__ as TG_VER
 from telegram.ext import (ApplicationBuilder,MessageHandler, PicklePersistence, filters)
-from telegram import Chat, ChatMember, ChatMemberUpdated, Update, constants,InputMediaVideo, InputMediaPhoto
+from telegram import Chat, ChatMember, ChatMemberUpdated, Update, constants
 from telegram.constants import ParseMode
 from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 
 import config
-from utilities import delete_msg, restart_bot
-from settings import settings, settings_button
 from twitter import send_twitter_video
 from facebook import send_facebook_video
 from tiktok import send_tiktok_video
@@ -28,7 +25,7 @@ persistence = PicklePersistence(filepath=f'{config.main_directory}/db/persistenc
 application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persistence).build()
 
 # = ============================  bienvenida ============================ #
-logger.info("Bot iniciado")
+#borrar pantalla 
 
 
 
@@ -529,6 +526,9 @@ async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 # =======================================================================================
 
 if __name__ == '__main__':    
+    os.system('clear')
+    logger.critical("Bot iniciado")
+
     link_downloader_handler = MessageHandler(filters.TEXT, link_downloader)
     application.add_handler(link_downloader_handler)
     
@@ -539,8 +539,6 @@ if __name__ == '__main__':
     application.add_handler(help_handler, 4)
 
 
-    restart_bot_handler = CommandHandler("restart", restart_bot)
-    application.add_handler(restart_bot_handler, 9)
     
     
     addcomand_handler = CommandHandler('addcomand', add_command)
@@ -697,6 +695,8 @@ if __name__ == '__main__':
 
 
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
+    
+    
 
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
