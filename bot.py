@@ -188,12 +188,12 @@ def checkDivisas(mensaje):
 
 async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        if checkDivisas(update.message):
+        specific_symbol = update.message.text.strip('/')
+        if checkDivisas(specific_symbol):
             response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
             logger.info("Estado de la API: " + str(response.status_code))
             data = response.json()
 
-            specific_symbol = update.message.text.strip('/')
             for item in data:
                 if item["symbol"] == specific_symbol:
                     symbol = item['symbol']
@@ -201,7 +201,9 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     last = item['last']
                     high = item['high']
             await update.message.reply_text('<b>'+symbol+'</b>'+'\n'+'Último: $'+str(last)+'\n'+'Máximo: $'+str(high)+'\n'+'Hora: '+str(timestamp)+'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
-                        
+    else:
+        logger.error("Hay un problema con la funcion checkDivisas()")
+        pass
 
 
 
