@@ -5,7 +5,7 @@ import datetime as dt
 from loguru import logger
 from typing import Optional, Tuple
 import subprocess
-
+import requests
 from telegram import __version__ as TG_VER
 from telegram.ext import (ApplicationBuilder,MessageHandler, PicklePersistence, filters)
 from telegram import Chat, ChatMember, ChatMemberUpdated, Update, constants,InputMediaVideo, InputMediaPhoto
@@ -163,32 +163,50 @@ async def usd_to_clp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         hp = data[0]['hp']
         await update.message.reply_text('<b>USD CLP</b> ' + str(price) + flecha +'\n' +'Máxima: $' +str(hp)+'\n'  + signo + str(var) + '  ('+signo+str(varper)+'%)'+ '\n'+ str(dia) +', '+str(hora) +'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
        
-       
+    
 
-       
-import requests
-import datetime
+def saveDivisas():
+    logger.info("Guardando divisas...")
+    response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
+    data = response.json()
 
+    symbols = [item["symbol"] for item in data]
+
+    with open('symbols.txt', 'w') as file:
+        for symbol in symbols:
+            file.write(symbol + '\n')
+    logger.info("Divisas guardadas.")
+saveDivisas()
+
+def checkDivisas(mensaje):
+    with open('symbols.txt', 'r') as a:
+        lista = a.readlines()
+    if mensaje.text in lista:
+        return True
+    else:
+        return False
 
 async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        r = requests.get("https://www.cryptomkt.com/api/landing/ticker").json()
-        logger.info(r)
-        for item in r:
-            if item["symbol"] == update.message.text:
-                symbol = item['symbol']
-                timestamp = datetime.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
-                last = item['last']
-                high = item['high']
-                await update.message.reply_text(f"{symbol} \nÚltimo precio: {last} \nMáximo: {high} \nHora: {timestamp}")
-            else:
-                logger.error("No se encontró la moneda")
-                await update.message.reply_text("No se encontró la moneda")
-                pass
+        if checkDivisas(update.message):
+            response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
+            data = response.json()
+
+            specific_symbol = "BTCUSDT"
+            for item in data:
+                if item["symbol"] == specific_symbol:
+                    symbol = item['symbol']
+                    timestamp = dt.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
+                    last = item['last']
+                    high = item['high']
+                        
+
+
+
+
                 
                 
-                
-        
+
         
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
