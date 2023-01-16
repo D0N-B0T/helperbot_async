@@ -190,15 +190,17 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         if checkDivisas(update.message):
             response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
+            logger.info("Estado de la API: " + str(response.status_code))
             data = response.json()
 
-            specific_symbol = "BTCUSDT"
+            specific_symbol = update.message.text.strip('/')
             for item in data:
                 if item["symbol"] == specific_symbol:
                     symbol = item['symbol']
                     timestamp = dt.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
                     last = item['last']
                     high = item['high']
+            await update.message.reply_text('<b>'+symbol+'</b>'+'\n'+'Último: $'+str(last)+'\n'+'Máximo: $'+str(high)+'\n'+'Hora: '+str(timestamp)+'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
                         
 
 
