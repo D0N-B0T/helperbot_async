@@ -13,10 +13,10 @@ from telegram.constants import ParseMode
 from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 
 import config
-from twitter import send_twitter_video
-from facebook import send_facebook_video
-from tiktok import send_tiktok_video
-
+from modules.twitter import send_twitter_video
+from modules.facebook import send_facebook_video
+from modules.tiktok import send_tiktok_video
+from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
 
 if not os.path.exists(f"{config.main_directory}/db"):
@@ -26,8 +26,6 @@ persistence = PicklePersistence(filepath=f'{config.main_directory}/db/persistenc
 application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persistence).build()
 
 # = ============================  bienvenida ============================ #
-#borrar pantalla 
-
 
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
@@ -213,6 +211,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
             if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
                 await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+                #aqui empieza el codigo
                 url = update.message.text.split(" ")[1]                
                 split_instagram_url = update.message.text.split("?")[0].split("/")
                 shortcode = split_instagram_url[5]
@@ -231,7 +230,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
             await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
             
-        # FACEBOOK
+    # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/", "/video https://www.facebook.com/reel/")):
             #await send_facebook_video(update, context)
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
@@ -252,7 +251,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
      
              
         
-        # TWITTER
+    # TWITTER
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
             await send_twitter_video(update, context)
             
@@ -459,6 +458,10 @@ async def comunistasculiaos(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def  trabajo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         await context.bot.send_video(chat_id=update.effective_chat.id, video=open('videos/trabajo.mp4', 'rb'), supports_streaming=True)
+        
+async def venecosqls(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        await context.bot.send_audio(chat_id=update.effective_chat.id, audio=open('audio/venecosqls.ogg', 'rb'))
         
 # ===============================================================================================================
 
@@ -712,6 +715,8 @@ if __name__ == '__main__':
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
     
     
+    venecosqls_handler = CommandHandler('venecosqls', venecosqls)
+    application.add_handler(venecosqls_handler, 54)
 
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
