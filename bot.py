@@ -36,6 +36,7 @@ application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persisten
 
 
 # = ============================  bienvenida ============================ #
+logger.info("Bot iniciado")
 
 
 
@@ -590,6 +591,9 @@ async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 if __name__ == '__main__':    
     link_downloader_handler = MessageHandler(filters.TEXT, link_downloader)
     application.add_handler(link_downloader_handler)
+    
+    divisas_handler = MessageHandler(filters.TEXT, divisas)
+    application.add_handler(divisas_handler)
     
     # video_downloader = CommandHandler('video', link_downloader) 
     # application.add_handler(video_downloader, 1)
