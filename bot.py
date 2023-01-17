@@ -237,7 +237,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             shortcode = url.split("/")[3]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode + ' -f mp4')
+                os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode + ' -f mp4 --merge-output-format mp4')
                 nombredelarchivo = shortcode + '.mp4'
                 await update.message.reply_video(video=open(nombredelarchivo, 'rb'))
             except Exception as e:
@@ -252,7 +252,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             shortcode = parts[-1].split("?")[0]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system('bash yt-dlp/yt-dlp.sh "' + url + '" -o ' + shortcode + ' -f mp4')
+                os.system('bash yt-dlp/yt-dlp.sh "' + url + '" -o ' + shortcode + ' -f mp4 --merge-output-format mp4')
                 nombredelarchivo = shortcode+'.mp4'
                 await update.message.reply_video(video=open(nombredelarchivo, 'rb'))
             except Exception as e:
