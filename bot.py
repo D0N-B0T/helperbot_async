@@ -231,7 +231,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
             
     # FACEBOOK
-        if update.message.text.startswith(("/video https://fb.watch/", "/video https://www.facebook.com/reel/")):
+        if update.message.text.startswith(("/video https://fb.watch/")):
             #await send_facebook_video(update, context)
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
@@ -240,13 +240,23 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             try:
                 os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
                 await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
-                
-                
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return
-                
-                
+            
+        if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
+            #await send_facebook_video(update, context)
+            await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+            url = update.message.text.split(" ")[1]
+            shortcode = url.split("/")[4]
+            logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
+            try:
+                os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
+            except Exception as e:
+                logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
+                return   
+            
             
      
              
