@@ -232,35 +232,30 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
     # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/")):
-            #await send_facebook_video(update, context)
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
             shortcode = url.split("/")[3]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode+'.mp4')
                 await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return
             
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
-            #await send_facebook_video(update, context)
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
             shortcode = url.split("/")[4]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+                os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode+'.mp4')
                 await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return   
             
-            
-     
-             
-        
+
     # TWITTER
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
             await send_twitter_video(update, context)
