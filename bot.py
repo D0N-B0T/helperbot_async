@@ -246,7 +246,9 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
-            shortcode = url.split("/")[4]
+            #/video https://www.facebook.com/reel/495255849418241?fs=e&s=TIeQ9V&mibextid=0NULKw
+            parts = url.split("/")
+            shortcode = parts[-1].split("?")[0]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
                 os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode+'.mp4')
