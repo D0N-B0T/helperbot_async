@@ -250,7 +250,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
                 os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode+'.mp4')
-                await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
+                nombredelarchivo = shortcode+'.mp4.mkv'
+                await update.message.reply_video(video=open(nombredelarchivo, 'rb'))
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return   
