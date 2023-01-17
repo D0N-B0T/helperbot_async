@@ -232,13 +232,13 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
     # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/")):
-            send_facebook_video_watch(update, context)
+            await send_facebook_video_watch(update, context)
             
 
         
 
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
-           send_facebook_video_reel(update, context)
+           await send_facebook_video_reel(update, context)
 
     # TWITTER
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
