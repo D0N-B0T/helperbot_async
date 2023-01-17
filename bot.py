@@ -244,7 +244,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if os.path.exists(shortcode + '.mp4'):
                     logger.info(f"Sending {shortcode}.mp4")
                     await update.message.reply_video(video=open(shortcode + '.mp4', 'rb'))
-                if os.path.exists(shortcode + '.mp4.mkv')
+                if os.path.exists(shortcode + '.mp4.mkv'):
                     logger.info(f"Sending {shortcode}.mp4.mkv")
                     await update.message.reply_video(video=open(shortcode + '.mp4.mkv', 'rb'))
             except Exception as e:
