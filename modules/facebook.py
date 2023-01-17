@@ -5,7 +5,7 @@ from loguru import logger
 
 from modules.utilities import file_in_limits
 
-from video import FileDownload
+from modules.video import FileDownload
 
 name = "youtube_dl"
 TMP_FOLDER = "tmp/"
