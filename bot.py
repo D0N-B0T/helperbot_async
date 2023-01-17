@@ -242,7 +242,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return
-            
+        
+        import glob
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
@@ -250,8 +251,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             shortcode = parts[-1].split("?")[0]
             logger.info(f"Downloading facebook post {url} with shortcode {shortcode}")
             try:
-                os.system('bash yt-dlp/yt-dlp.sh "'+ url +'" -o '+shortcode+'.mp4')
-                nombredelarchivo = shortcode+'mp4*'
+                os.system('bash yt-dlp/yt-dlp.sh "' + url + '" -o ' + shortcode + ' -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"')
+                nombredelarchivo = shortcode+'.mp4'
                 await update.message.reply_video(video=open(nombredelarchivo, 'rb'))
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
