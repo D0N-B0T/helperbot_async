@@ -199,7 +199,7 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 
 
-        
+
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # TIKTOK
@@ -243,7 +243,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
                 return
         
-        import glob
+
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
             await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
             url = update.message.text.split(" ")[1]
