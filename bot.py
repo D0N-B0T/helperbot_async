@@ -272,7 +272,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await update.message.reply_video(video=open(shortcode + '.mp4.mkv', 'rb'))
                 else:
                     logger.info(f"Neither {shortcode}.mp4 nor {shortcode} exist")
-                    await update.message.reply_video(video=open(shortcode', 'rb'))
+                    await update.message.reply_video(video=open(shortcode , 'rb'))
                 
             except Exception as e:
                 logger.error(f"Error downloading facebook post {url} with shortcode {shortcode}: {e}")
