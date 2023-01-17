@@ -193,49 +193,23 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error("Hay un problema con la funcion checkDivisas()")
         pass
 
-
-
-
-                
-                
-
-#test
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # TIKTOK
     if update.message:       
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
-            if "settings" not in context.chat_data or context.chat_data["settings"]["tiktokv"] == "✅":
-                await send_tiktok_video(update, context)
+            await send_tiktok_video(update, context)
+            
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
-            if "settings" not in context.chat_data or context.chat_data["settings"]["instagramp"] == "✅":
-                await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
-                #aqui empieza el codigo
-                url = update.message.text.split(" ")[1]                
-                split_instagram_url = update.message.text.split("?")[0].split("/")
-                shortcode = split_instagram_url[5]
-                logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
-                try:
-                    logger.info(f"Downloading instagram post {url}")
-                    os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
-                    await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
-
-                    
-                except Exception as e:
-                    logger.error(f"Error downloading instagram post {split_instagram_url} with shortcode {shortcode}: {e}")
-                    return
-
-                     
+            await send_instagram_video(update, context)
+            
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
             await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
             
     # FACEBOOK
         if update.message.text.startswith(("/video https://fb.watch/")):
             await send_facebook_video_watch(update, context)
-            
-
-        
 
         if update.message.text.startswith(("/video https://www.facebook.com/reel/")):
            await send_facebook_video_reel(update, context)
@@ -244,8 +218,6 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if update.message.text.startswith(("/video https://twitter.com/","/video https://twitter.com/", "/video https://mobile.twitter.com/", "/video https://www.twitter.com/", "/video https://twtr.com/", "/video https://m.twitter.com/", "/video https://mobile.twitter.com/", "/video https://twitter.com/i/status/")):
             await send_twitter_video(update, context)
             
-        
-        
 
             
 # add command
