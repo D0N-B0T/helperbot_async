@@ -569,7 +569,7 @@ if __name__ == '__main__':
     send_espaldita_handler = CommandHandler('espaldita', send_espaldita)
     application.add_handler(send_espaldita_handler, 20)
     
-    send_loderechoumano_handler = CommandHandler('loderechoumano', send_lodereshoumano)
+    send_loderechoumano_handler = CommandHandler(['loderechoumano','dereshohumanoh'], send_lodereshoumano)
     application.add_handler(send_loderechoumano_handler, 21)
     
     send_yafue_handler = CommandHandler('yafue', send_yafue)
