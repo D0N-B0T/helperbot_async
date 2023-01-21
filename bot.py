@@ -256,7 +256,10 @@ async def pengu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         lista = ['videos/PENGU.mp4', 'videos/pengu2.mp4', 'videos/pengu4.mp4']
         await context.bot.send_video(chat_id=update.effective_chat.id, video=open(random.choice(lista), 'rb'), supports_streaming=True)
-        
+
+async def pengu2(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        await context.bot.send_video(chat_id=update.effective_chat.id, video=open('videos/pengu4.mp4', 'rb'), supports_streaming=True)
 
 async def send_tio(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
@@ -679,5 +682,7 @@ if __name__ == '__main__':
     venecosqls_handler = CommandHandler('venecosqls', venecosqls)
     application.add_handler(venecosqls_handler, 54)
 
+    pengu2_handler = CommandHandler('pengu2', pengu2)
+    application.add_handler(pengu2_handler, 55)
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
