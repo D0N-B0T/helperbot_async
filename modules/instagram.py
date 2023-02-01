@@ -9,8 +9,13 @@ async def send_instagram_video(update, context):
     logger.info(f"Downloading instagram post {split_instagram_url} with shortcode {shortcode}")
     try:
         logger.info(f"Downloading instagram post {url}")
-        os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
-        logger.info(f"File downloaded: {shortcode}.mp4")
+        try:
+            os.system('bash yt-dlp/yt-dlp.sh '+ url +' -o '+shortcode+'.mp4')
+            logger.info(f"File downloaded: {shortcode}.mp4")
+        except Exception as e:
+            logger.error(f"Error downloading instagram post {url}: {e} on line {sys.exc_info()[-1].tb_lineno} of {__file__}")
+            return
+        
         await update.message.reply_video(video=open(shortcode+'.mp4', 'rb'))
 
         
