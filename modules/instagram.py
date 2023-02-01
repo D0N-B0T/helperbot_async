@@ -1,7 +1,6 @@
 from loguru import logger
 import os,sys
 from telegram import constants
-from modules.utilities import compress_video
 async def send_instagram_video(update, context):    
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
     url = update.message.text.split(" ")[1]                
