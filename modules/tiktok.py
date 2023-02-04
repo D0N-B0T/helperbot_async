@@ -10,7 +10,7 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 import config
-from modules.utilities import file_in_limits,compress_video
+from modules.utilities import file_in_limits
 from loguru import logger
 
 
