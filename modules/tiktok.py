@@ -63,7 +63,9 @@ async def get_tiktok_username_id(url):
 
     if purl.netloc == "vm.tiktok.com":
         tiktok_id = purl.path.split("/")[1]
+        logger.debug(f"tiktok_id from {url} {tiktok_id}")
         link = f"https://vm.tiktok.com/{tiktok_id}"
+        logger.debug(f"link from {url} {link}")
         headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'}
         
         response = requests.get(link, headers=headers)
@@ -77,7 +79,9 @@ async def get_tiktok_username_id(url):
         id = purl.path.split("/")[3]
         link = url
     else:
+        logger.debug(f"Invalid URL {url}")
         raise Exception("Invalid URL")
+        
     return (username, id, link)
 
 
