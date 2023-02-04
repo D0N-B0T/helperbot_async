@@ -83,13 +83,18 @@ async def get_tiktok_username_id(url):
 async def send_tiktok_video(update, context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_VIDEO)
 
+    logger.debug(f"Got TikTok video from {update.message.from_user.username} {update.message.text}")
     url_infos = await get_tiktok_username_id(update.message.text)
+    logger.debug(f"Got TikTok video from {update.message.from_user.username} {update.message.text} {url_infos}")
     username = url_infos[0]
     video_id = url_infos[1]
 
     video_infos = await get_tiktok_video_infos(username, video_id)
+    logger.debug(f"Got TikTok video from {update.message.from_user.username} {update.message.text} {video_infos}")
     video_url = video_infos.get("video_url")
+    logger.debug(f"Got TikTok video from {update.message.from_user.username} {update.message.text} {video_url}")
     caption = video_infos.get("caption")
+    logger.debug(f"Got TikTok video from {update.message.from_user.username} {update.message.text} {caption}")
     
     if int(requests.head(video_url).headers["Content-Length"]) >= 50000000:
         if update.message.from_user.language_code == "it":
