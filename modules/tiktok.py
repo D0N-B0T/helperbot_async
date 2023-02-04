@@ -65,10 +65,11 @@ async def get_tiktok_username_id(url):
         tiktok_id = purl.path.split("/")[1]
         link = f"https://vm.tiktok.com/{tiktok_id}"
         headers = {'User-Agent': 'Mozilla/5.0 (Linux; Android 11) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36'}
+        
         response = requests.get(link, headers=headers)
-
+        logger.debug(f"response from {link} {response}")
         info_list = requests.utils.unquote(response.url).split("?")[0].split("/")
-
+        logger.debug(f"info_list from {link} {info_list}")
         username = info_list[3]
         id = info_list[5]
     elif purl.netloc == 'www.tiktok.com':
@@ -138,16 +139,19 @@ async def inline_tiktok_download(update: Update, context: ContextTypes.DEFAULT_T
     if query.startswith(("https://vm.tiktok.com", "https://www.tiktok.com")):
         try:
             url_infos = await get_tiktok_username_id(query)
+            logger.debug(f"GOT TIKTOK username and id {url_infos}")
             username = url_infos[0]
             video_id = url_infos[1]
-
+            
             video_infos = await get_tiktok_video_infos(username, video_id)
+            logger.debug(f"GOT TIKTOK VIDEO INFOS {video_infos}")
             video_url = video_infos.get("video_url")
             caption = video_infos.get("caption")
             thumbnail = video_infos.get("thumbnail_url")
             
             results = []
             if await file_in_limits(video_url):
+                logger.info(f"File size is ok, sending video to {update.inline_query.from_user.username}")
                 results.append(
                     InlineQueryResultVideo(
                         id=str(uuid.uuid4()),
