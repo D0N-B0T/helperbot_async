@@ -10,7 +10,8 @@ from telegram.error import BadRequest
 from telegram.ext import ContextTypes
 
 import config
-from modules.utilities import file_in_limits
+from modules.utilities import file_in_limits,compress_video
+from loguru import logger
 
 
 async def get_tiktok_video_infos(username: str, video_ID: str) -> dict:
@@ -23,8 +24,11 @@ async def get_tiktok_video_infos(username: str, video_ID: str) -> dict:
 
     api_url = f"https://api16-normal-c-useast1a.tiktokv.com/aweme/v1/feed/?aweme_id={video_ID}"
     async with aiohttp.ClientSession() as session:
+        logger.debug(f"Getting TikTok video infos from {api_url}")
         async with session.get(api_url, headers=headers, timeout=10) as response:
+            logger.debug(f"Got TikTok video infos from {api_url}")
             response = await response.json()
+            logger.debug(f"Got TikTok video infos from {api_url} {response}")
     
     data = response["aweme_list"][0]
 
