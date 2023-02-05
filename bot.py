@@ -15,7 +15,7 @@ from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 import config
 from modules.twitter import send_twitter_video
 from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
-from modules.tiktok import send_tiktok_video
+from modules.api.tiktok import TikTokAPI
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
 
@@ -152,6 +152,18 @@ async def usd_to_clp(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text('<b>USD CLP</b> ' + str(price) + flecha +'\n' +'Máxima: $' +str(hp)+'\n'  + signo + str(var) + '  ('+signo+str(varper)+'%)'+ '\n'+ str(dia) +', '+str(hora) +'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
        
     
+async def convertusd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        usd = update.message.text
+        usd = usd.split()
+        usd = usd[1]
+        usd = float(usd)
+        clp = usd * 780
+        clp = str(clp)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=clp)
+
+
+
 
 def saveDivisas():
     logger.info("Guardando divisas...")
@@ -193,12 +205,18 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error("Hay un problema con la funcion checkDivisas()")
         pass
 
+TikTok = TikTokAPI(
+    headers={
+        "Referer": "https://www.tiktok.com/",
+    }
+)
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # TIKTOK
     if update.message:       
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
-            await send_tiktok_video(update, context)
+            async for url, description, video in TikTok.get_urls(update.message.text):
+                await context.bot.send_video(chat_id=update.effective_chat.id, video=url, caption=description)
             
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
@@ -504,6 +522,11 @@ async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     )
     await update.effective_message.reply_text(text)
 
+
+
+
+
+
 # =======================================================================================
 
 if __name__ == '__main__':    
@@ -684,5 +707,8 @@ if __name__ == '__main__':
 
     pengu2_handler = CommandHandler('pengu2', pengu2)
     application.add_handler(pengu2_handler, 55)
+    
+    convertusd_handler = CommandHandler('cusd', convertusd)
+    application.add_handler(convertusd_handler, 56)
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
