@@ -215,7 +215,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # TIKTOK
     if update.message:       
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
-            async for url, description, video in TikTok.get_urls(update.message.text):
+            async for url, description, video in TikTok.download_video(update.message.text):
                 await context.bot.send_video(chat_id=update.effective_chat.id, video=url, caption=description)
             
     #INSTAGRAM
