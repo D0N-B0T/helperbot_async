@@ -37,11 +37,8 @@ class TikTokAPI:
     script_selector: str = field(default='script[id="SIGI_STATE"]', converter=str)
 
     async def handle_message(self, message: Message) -> AsyncIterator[tuple[str, str, bytes]]:
-        entries = (message.text[e.offset:e.offset + e.length] for e in message.entities)
-        urls = map(
-            lambda u: u if u.startswith('http') else f'https://{u}',# para obtener el link del mensaje enviado en el chat
-            filter(lambda e: self.link in e, entries)
-        )
+        urls = [url for url in message.text.split() if self.link in url]
+                
         for url in urls:
             description, video = await self.download_video(url)
             yield url, description, video
