@@ -9,7 +9,6 @@ from typing import AsyncIterator
 import httpx
 from aiogram.types import Message
 from attr import define, field
-from settings import USER_AGENT
 from bs4 import BeautifulSoup
 
 
