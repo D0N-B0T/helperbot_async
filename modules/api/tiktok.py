@@ -76,7 +76,7 @@ class TikTokAPI:
     @property
     def _user_agent(self) -> dict:
         return {
-            'User-Agent': USER_AGENT or (
+            'User-Agent': (
                 f"{''.join(random.choices(string.ascii_lowercase, k=random.randint(4,10)))}-"
                 f"{''.join(random.choices(string.ascii_lowercase, k=random.randint(3,7)))}/"
                 f"{random.randint(10, 300)} "
