@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from loguru import logger
 from telegram import constants
 
+
+
 def _user_agent():
         return {
             'User-Agent': (
@@ -24,12 +26,10 @@ def _tt_webid_v2():
 
 
 
-
 async def download_video(update,context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
     url = update.message.text.split(" ")[1]
-    async with httpx.AsyncClient(headers= {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
-
+    async with httpx.AsyncClient(headers= _user_agent, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
         page = await client.get(url, headers=_user_agent)
         page_id = page.url.path.rsplit('/', 1)[-1]
 
