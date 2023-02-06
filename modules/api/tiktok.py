@@ -14,7 +14,7 @@ from loguru import logger
 from telegram import constants
 from loguru import logger
 import os
-from modules.utilities import compress_video, file_in_limits
+
 class Retrying(Exception):
     pass
 
