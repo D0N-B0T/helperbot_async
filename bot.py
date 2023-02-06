@@ -15,7 +15,7 @@ from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 import config
 from modules.twitter import send_twitter_video
 from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
-from modules.api.tiktok import TikTokAPI
+from modules.api.tiktok import send_tiktok_video
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
 
@@ -205,19 +205,18 @@ async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.error("Hay un problema con la funcion checkDivisas()")
         pass
 
-TikTok = TikTokAPI(
-    headers={
-        "Referer": "https://www.tiktok.com/",
-    }
-)
+# TikTok = TikTokAPI(
+#     headers={
+#         "Referer": "https://www.tiktok.com/",
+#     }
+# )
 # = ============================  video ============================ #    
 async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:  
         
     # TIKTOK     
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
-            for url, description, video in await TikTok.download_video(update.message.text):
-                await context.bot.send_video(chat_id=update.effective_chat.id, video=url, caption=description)
+            await send_tiktok_video(update, context)
             
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
