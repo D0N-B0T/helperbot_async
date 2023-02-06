@@ -38,9 +38,10 @@ class TikTokAPI:
 
     async def handle_message(self, message: Message) -> AsyncIterator[tuple[str, str, bytes]]:
         urls = [url for url in message.text.split() if self.link in url]
-                
+        print (urls[0])
         for url in urls:
             description, video = await self.download_video(url)
+            print(description, video)
             yield url, description, video
 
     @retries(times=3)
