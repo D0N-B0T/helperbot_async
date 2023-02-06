@@ -59,7 +59,8 @@ async def download_video(update,context):
                     video.raise_for_status()
                     await context.bot.send_video(chat_id=update.effective_chat.id, video=video.content, caption=description, supports_streaming=True)
     except Exception as e:
-        logger.error(e, "in line {e.__traceback__.tb_lineno}")
+        error = e+"error downloading video in line" + str(sys.exc_info()[-1].tb_lineno)
+        logger.error(error)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Error downloading video")
 
 
