@@ -9,59 +9,6 @@ from bs4 import BeautifulSoup
 from loguru import logger
 from telegram import constants
 
-
-class Retrying(Exception):
-    pass
-
-
-def retries(times: int):
-    def decorator(func):
-        @wraps(func)
-        async def wrapper(*args, **kwargs):
-            for _ in range(times):
-                try:
-                    return await func(*args, **kwargs)
-                except Exception as ex:
-                    logger.exception(ex)
-                    await asyncio.sleep(0.5)
-        return wrapper
-    return decorator
-
-
-
-async def handle_message(update, context):
-    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
-    url = update.message.text.split(" ")[1]
-    return await url
-
-async def download_video(url: str) -> tuple[str, bytes]:
-
-        async with httpx.AsyncClient(headers= {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
-            response = await client.get(url)
-            page = await client.get(url, headers=_user_agent)
-            page_id = page.url.path.rsplit('/', 1)[-1]
-
-            soup = BeautifulSoup(page.text, 'html.parser')
-            script_selector = 'script[id="SIGI_STATE"]'
-            if script := soup.select_one(script_selector):
-                script = json.loads(script.text)
-            else:
-                raise Retrying("no script")
-
-            modules = tuple(script.get("ItemModule").values())
-            if not modules:
-                raise Retrying("no modules")
-
-            for data in modules:
-                if data["id"] != page_id:
-                    raise Retrying("video_id is different from page_id")
-                description = data["desc"]
-                link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
-                if video := await client.get(link, headers=_user_agent):
-                    video.raise_for_status()
-                    return description, video.content
-
-
 def _user_agent():
         return {
             'User-Agent': (
@@ -74,3 +21,37 @@ def _user_agent():
 
 def _tt_webid_v2():
         return {'tt_webid_v2': f"{random.randint(10 ** 18, (10 ** 19) - 1)}"}
+
+
+
+
+async def download_video(update,context):
+    await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
+    url = update.message.text.split(" ")[1]
+    async with httpx.AsyncClient(headers= {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
+
+        page = await client.get(url, headers=_user_agent)
+        page_id = page.url.path.rsplit('/', 1)[-1]
+
+        soup = BeautifulSoup(page.text, 'html.parser')
+        script_selector = 'script[id="SIGI_STATE"]'
+        if script := soup.select_one(script_selector):
+            script = json.loads(script.text)
+        else:
+            logger.error(f"no script with selector {script_selector}")
+
+        modules = tuple(script.get("ItemModule").values())
+        if not modules:
+            logger.error("no modules found")
+
+        for data in modules:
+            if data["id"] != page_id:
+                logger.error(f"page id {page_id} does not match data id {data['id']}")
+            description = data["desc"]
+            link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
+            if video := await client.get(link, headers=_user_agent):
+                video.raise_for_status()
+                await context.bot.send_video(chat_id=update.effective_chat.id, video=video.content, caption=description, supports_streaming=True)
+
+
+
