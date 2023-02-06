@@ -1,19 +1,14 @@
 import asyncio
 import json
-#import logging
 import random
 import string
 from datetime import datetime
 from functools import wraps
-from typing import AsyncIterator
 import httpx
-#from aiogram.types import Message
-from attr import define, field
 from bs4 import BeautifulSoup
 from loguru import logger
 from telegram import constants
-from loguru import logger
-import os
+
 
 class Retrying(Exception):
     pass
