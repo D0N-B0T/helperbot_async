@@ -29,7 +29,11 @@ def _tt_webid_v2():
 async def download_video(update,context):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action=constants.ChatAction.UPLOAD_DOCUMENT)
     url = update.message.text.split(" ")[1]
-    async with httpx.AsyncClient(headers= _user_agent, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
+    logger.info(f"downloading {url}")
+    
+    
+    
+    with httpx.AsyncClient(headers= _user_agent, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
         logger.info(f"downloading {url}")
         page = await client.get(url, headers=_user_agent)
         logger.info(f"status code {page.status_code}")
