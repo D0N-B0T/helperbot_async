@@ -33,34 +33,36 @@ async def download_video(update,context):
     
     
     try:
-        with httpx.AsyncClient(headers= _user_agent, timeout=30, cookies=_tt_webid_v2, follow_redirects=True) as client:   
-            logger.info(f"downloading {url}")
-            page = await client.get(url, headers=_user_agent)
-            logger.info(f"status code {page.status_code}")
-            page_id = page.url.path.rsplit('/', 1)[-1]
-            logger.info(f"page id {page_id}")
-            soup = BeautifulSoup(page.text, 'html.parser')
-            script_selector = 'script[id="SIGI_STATE"]'
-            if script := soup.select_one(script_selector):
-                script = json.loads(script.text)
-            else:
-                logger.error(f"no script with selector {script_selector}")
+        try:
+            client = httpx.AsyncClient(headers= _user_agent, timeout=30, cookies=_tt_webid_v2, follow_redirects=True)
+        except Exception as e:
+            logger.error(e)
+        logger.info(f"downloading {url}")
+        page = await client.get(url, headers=_user_agent)
+        logger.info(f"status code {page.status_code}")
+        page_id = page.url.path.rsplit('/', 1)[-1]
+        logger.info(f"page id {page_id}")
+        soup = BeautifulSoup(page.text, 'html.parser')
+        script_selector = 'script[id="SIGI_STATE"]'
+        if script := soup.select_one(script_selector):
+            script = json.loads(script.text)
+        else:
+            logger.error(f"no script with selector {script_selector}")
 
-            modules = tuple(script.get("ItemModule").values())
-            if not modules:
-                logger.error("no modules found")
+        modules = tuple(script.get("ItemModule").values())
+        if not modules:
+            logger.error("no modules found")
 
-            for data in modules:
-                if data["id"] != page_id:
-                    logger.error(f"page id {page_id} does not match data id {data['id']}")
-                description = data["desc"]
-                link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
-                if video := await client.get(link, headers=_user_agent):
-                    video.raise_for_status()
-                    await context.bot.send_video(chat_id=update.effective_chat.id, video=video.content, caption=description, supports_streaming=True)
+        for data in modules:
+            if data["id"] != page_id:
+                logger.error(f"page id {page_id} does not match data id {data['id']}")
+            description = data["desc"]
+            link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
+            if video := await client.get(link, headers=_user_agent):
+                video.raise_for_status()
+                await context.bot.send_video(chat_id=update.effective_chat.id, video=video.content, caption=description, supports_streaming=True)
     except Exception as e:
-        error = e+"error downloading video in line" + str(sys.exc_info()[-1].tb_lineno)
-        logger.error(error)
+        logger.error(e)
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Error downloading video")
 
 
