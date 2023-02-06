@@ -10,7 +10,7 @@ import httpx
 from aiogram.types import Message
 from attr import define, field
 from bs4 import BeautifulSoup
-
+from loguru import logger
 
 class Retrying(Exception):
     pass
@@ -24,7 +24,7 @@ def retries(times: int):
                 try:
                     return await func(*args, **kwargs)
                 except Exception as ex:
-                    logging.exception(ex)
+                    logger.exception(ex)
                     await asyncio.sleep(0.5)
         return wrapper
     return decorator
@@ -37,38 +37,46 @@ class TikTokAPI:
     script_selector: str = field(default='script[id="SIGI_STATE"]', converter=str)
 
     async def handle_message(self, message: Message) -> AsyncIterator[tuple[str, str, bytes]]:
-        urls = [url for url in message.text.split() if self.link in url]
-        print (urls[0])
-        for url in urls:
-            description, video = await self.download_video(url)
-            print(description, video)
-            yield url, description, video
-
+        try:
+            urls = [url for url in message.text.split() if self.link in url]
+            print (urls[0])
+            for url in urls:
+                description, video = await self.download_video(url)
+                print(description, video)
+                yield url, description, video
+        except Exception as ex:
+            logger.exception(ex)
+            
+            
     @retries(times=3)
     async def download_video(self, url: str) -> tuple[str, bytes]:
-        async with httpx.AsyncClient(headers=self.headers, timeout=30, cookies=self._tt_webid_v2, follow_redirects=True) as client:
-            page = await client.get(url, headers=self._user_agent)
-            page_id = page.url.path.rsplit('/', 1)[-1]
+        try:
+            async with httpx.AsyncClient(headers=self.headers, timeout=30, cookies=self._tt_webid_v2, follow_redirects=True) as client:
+                page = await client.get(url, headers=self._user_agent)
+                page_id = page.url.path.rsplit('/', 1)[-1]
 
-            soup = BeautifulSoup(page.text, 'html.parser')
+                soup = BeautifulSoup(page.text, 'html.parser')
 
-            if script := soup.select_one(self.script_selector):
-                script = json.loads(script.text)
-            else:
-                raise Retrying("no script")
+                if script := soup.select_one(self.script_selector):
+                    script = json.loads(script.text)
+                else:
+                    raise Retrying("no script")
 
-            modules = tuple(script.get("ItemModule").values())
-            if not modules:
-                raise Retrying("no modules")
+                modules = tuple(script.get("ItemModule").values())
+                if not modules:
+                    raise Retrying("no modules")
 
-            for data in modules:
-                if data["id"] != page_id:
-                    raise Retrying("video_id is different from page_id")
-                description = data["desc"]
-                link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
-                if video := await client.get(link, headers=self._user_agent):
-                    video.raise_for_status()
-                    return description, video.content
+                for data in modules:
+                    if data["id"] != page_id:
+                        raise Retrying("video_id is different from page_id")
+                    description = data["desc"]
+                    link = data["video"]["downloadAddr"].encode('utf-8').decode('unicode_escape')
+                    if video := await client.get(link, headers=self._user_agent):
+                        video.raise_for_status()
+                        return description, video.content
+        except Exception as ex:
+            logger.exception(ex)
+            
 
     @property
     def _user_agent(self) -> dict:
