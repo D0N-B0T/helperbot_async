@@ -101,7 +101,7 @@ async def yt_dlp_sender(update,context,CAPTION):
         files = tosend[0]
         if files.endswith(('avi', 'flv', 'mkv', 'mov', 'mp4', 'webm', '3g2', '3gp', 'f4v', 'mk3d', 'divx', 'mpg', 'ogv', 'm4v', 'wmv')):
                 print("Found Short Video and Sending!!!")
-                await context.bot.reply_video(video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
+                await context.bot.send_video(chat_id=update.message.chat_id, video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
                 print("Video {} was Sent Successfully!".format(files))
                 os.remove(files)
                 time.sleep(3)
