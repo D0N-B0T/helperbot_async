@@ -15,7 +15,7 @@ from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 import config
 from modules.twitter import send_twitter_video
 from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
-from tiktok import main_url_dl
+from modules.tiktok import main_url_dl
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
 
