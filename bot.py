@@ -15,7 +15,7 @@ from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 import config
 from modules.twitter import send_twitter_video
 from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
-from modules.api.tiktok import download_video
+from tiktok import main_url_dl
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
 
@@ -29,10 +29,7 @@ application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persisten
 
 
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
-    """Takes a ChatMemberUpdated instance and extracts whether the 'old_chat_member' was a member
-    of the chat and whether the 'new_chat_member' is a member of the chat. Returns None, if
-    the status didn't change.
-    """
+
     status_change = chat_member_update.difference().get("status")
     old_is_member, new_is_member = chat_member_update.difference().get("is_member", (None, None))
 
@@ -55,7 +52,6 @@ def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tup
 
 
 async def track_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Tracks the chats the bot is in."""
     result = extract_status_change(update.my_chat_member)
     if result is None:
         return
@@ -89,7 +85,6 @@ async def track_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             context.bot_data.setdefault("channel_ids", set()).discard(chat.id)
 
 async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Greets new users in chats and announces when someone leaves"""
     result = extract_status_change(update.chat_member)
     if result is None:
         return
@@ -212,7 +207,8 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
         
     # TIKTOK     
         if update.message.text.startswith(("/video https://vm.tiktok.com", "/video https://www.tiktok.com")):
-            await download_video(update, context)
+            await main_url_dl(update, context)
+
             
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
