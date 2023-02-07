@@ -212,7 +212,7 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
     #INSTAGRAM
         if update.message.text.startswith(("/video https://www.instagram.com/p/", "/video https://www.instagram.com/reel/")):
-            await send_instagram_video(update, context)
+            await main_url_dl(update, context)
             
         if update.message.text.startswith(("/video https://www.instagram.com/stories/", "/video https://instagram.com/stories/")):
             await update.message.reply_text("Por el momento no puedo bajar historias de instagram 😥")
