@@ -101,23 +101,16 @@ async def yt_dlp_sender(update,context,CAPTION):
         files = tosend[0]
         if files.endswith(('avi', 'flv', 'mkv', 'mov', 'mp4', 'webm', '3g2', '3gp', 'f4v', 'mk3d', 'divx', 'mpg', 'ogv', 'm4v', 'wmv')):
                 print("Found Short Video and Sending!!!")
-                await context.bot.send_video(chat_id=update.message.chat_id, video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
+                await context.bot.reply_video(video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
                 print("Video {} was Sent Successfully!".format(files))
                 os.remove(files)
-                try:
-                    await context.bot.delete_message(chat_id=update.message.chat.id, message_id=update.message.message_id)
-                except BaseException:
-                    print("Message was already deleted.")
                 time.sleep(3)
         elif files.endswith(('aiff', 'alac', 'flac', 'm4a', 'mka', 'mp3', 'ogg', 'opus', 'wav','aac', 'ape', 'asf', 'f4a', 'f4b', 'm4b', 'm4p', 'm4r', 'oga', 'ogx', 'spx', 'vorbis', 'wma')):
                 print("Found Short Audio")
                 await context.bot.send_audio(chat_id=update.message.chat_id, audio=open(files, 'rb'), caption = CAPTION, parse_mode='HTML')
                 print("Audio {} was Sent Successfully!".format(files))
                 os.remove(files)
-                try:
-                    await context.bot.delete_message(chat_id=update.message.chat.id, message_id=update.message.message_id)
-                except BaseException:
-                    print("Message was already deleted. \n \n")
+                
                 time.sleep(2)
     elif no_of_files > 1 and no_of_files<=10:
         media_group=[]
@@ -131,11 +124,7 @@ async def yt_dlp_sender(update,context,CAPTION):
         
         await context.bot.send_media_group(chat_id = update.message.chat.id, media = media_group, write_timeout=60)
         media_group = []
-        try:
-            await context.bot.delete_message(chat_id=update.message.chat.id, message_id=update.message.message_id)
-        except BaseException:
-            print("Yt-DLP Sender, Message was already deleted.")
-    
+        
 
 
 async def main_url_dl(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
