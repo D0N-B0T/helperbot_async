@@ -97,34 +97,21 @@ async def yt_dlp_sender(update,context,CAPTION):
     if tosend == None:
         return "No Files Downloaded"
     no_of_files = len(tosend)
-    if no_of_files == 1:
-        files = tosend[0]
-        if files.endswith(('avi', 'flv', 'mkv', 'mov', 'mp4', 'webm', '3g2', '3gp', 'f4v', 'mk3d', 'divx', 'mpg', 'ogv', 'm4v', 'wmv')):
-                print("Found Short Video and Sending!!!")
-                await context.bot.send_video(chat_id=update.message.chat_id, video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
-                print("Video {} was Sent Successfully!".format(files))
-                os.remove(files)
-                time.sleep(3)
-        elif files.endswith(('aiff', 'alac', 'flac', 'm4a', 'mka', 'mp3', 'ogg', 'opus', 'wav','aac', 'ape', 'asf', 'f4a', 'f4b', 'm4b', 'm4p', 'm4r', 'oga', 'ogx', 'spx', 'vorbis', 'wma')):
-                print("Found Short Audio")
-                await context.bot.send_audio(chat_id=update.message.chat_id, audio=open(files, 'rb'), caption = CAPTION, parse_mode='HTML')
-                print("Audio {} was Sent Successfully!".format(files))
-                os.remove(files)
-                
-                time.sleep(2)
-    elif no_of_files > 1 and no_of_files<=10:
-        media_group=[]
-        for multimedias in tosend:
-                if multimedias.endswith(('avi', 'flv', 'mkv', 'mov', 'mp4', 'webm', '3g2', '3gp', 'f4v', 'mk3d', 'divx', 'mpg', 'ogv', 'm4v', 'wmv')): #appends videos
-
-                    media_group.append(InputMediaVideo(open(multimedias,'rb'),caption = CAPTION if len(media_group) == 0 else '',parse_mode='HTML'))
-                elif multimedias.endswith(('aiff', 'alac', 'flac', 'm4a', 'mka', 'mp3', 'ogg', 'opus', 'wav','aac', 'ape', 'asf', 'f4a', 'f4b', 'm4b', 'm4p', 'm4r', 'oga', 'ogx', 'spx', 'vorbis', 'wma')): #appends audios
-
-                    media_group.append(InputMediaAudio(open(multimedias,'rb'), caption = CAPTION if len(media_group) == 0 else '',parse_mode='HTML'))
-        
-        await context.bot.send_media_group(chat_id = update.message.chat.id, media = media_group, write_timeout=60)
-        media_group = []
-        
+    # if no_of_files == 1:
+    files = tosend[0]
+    if files.endswith(('avi', 'flv', 'mkv', 'mov', 'mp4', 'webm', '3g2', '3gp', 'f4v', 'mk3d', 'divx', 'mpg', 'ogv', 'm4v', 'wmv')):
+            print("Found Short Video and Sending!!!")
+            await context.bot.send_video(chat_id=update.message.chat_id, video=open(files, 'rb'), supports_streaming=True,caption = CAPTION, parse_mode='HTML')
+            print("Video {} was Sent Successfully!".format(files))
+            os.remove(files)
+            time.sleep(3)
+    elif files.endswith(('aiff', 'alac', 'flac', 'm4a', 'mka', 'mp3', 'ogg', 'opus', 'wav','aac', 'ape', 'asf', 'f4a', 'f4b', 'm4b', 'm4p', 'm4r', 'oga', 'ogx', 'spx', 'vorbis', 'wma')):
+            print("Found Short Audio")
+            await context.bot.send_audio(chat_id=update.message.chat_id, audio=open(files, 'rb'), caption = CAPTION, parse_mode='HTML')
+            print("Audio {} was Sent Successfully!".format(files))
+            os.remove(files)
+            
+            time.sleep(2)
 
 
 async def main_url_dl(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
