@@ -1,7 +1,7 @@
 import logging
 
 from telegram import Update
-from dukhota.message import Message
+from yastaba.message import Message
 
 
 def tg_update_to_message(update: Update) -> Message:
