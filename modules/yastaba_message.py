@@ -23,6 +23,8 @@ class Message(BaseModel):
 
     # channel_id without "-100" prefix
     chat_id: Optional[int]
+    
+    
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -30,6 +32,8 @@ class Message(BaseModel):
         object.__setattr__(self, "fingerprint", self.__gen_fingerprint())
 
     def __chat_id(self) -> int:
+        if self.channel_id is None:
+            raise ValueError("channel_id is None/empty, maybe user edited message?")
         return int(str(self.channel_id).replace("-100", ""))
 
     def __gen_fingerprint(self) -> str:
