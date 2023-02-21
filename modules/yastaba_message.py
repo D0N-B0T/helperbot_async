@@ -36,7 +36,8 @@ class Message(BaseModel):
         if self.channel_id is None:
             logging.debug("No channel_id, returning 0")
             return 0
-        return int(str(self.channel_id).replace("-100", ""))
+        else:
+            return int(str(self.channel_id).replace("-100", ""))
 
     def __gen_fingerprint(self) -> str:
         fingerprint_parts = [
