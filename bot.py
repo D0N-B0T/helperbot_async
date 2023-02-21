@@ -19,7 +19,8 @@ from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
 from modules.tiktok import main_url_dl
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
-from modules.yastaba.main import process #a
+from modules.yastaba.main import process
+
 
 if not os.path.exists(f"{config.main_directory}/db"):
     os.makedirs(f"{config.main_directory}/db")
