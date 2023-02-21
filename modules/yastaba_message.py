@@ -53,7 +53,7 @@ class Message(BaseModel):
 
     def is_comparable(self) -> bool:
         ids_present = self.channel_id and self.message_id
-        significant_content = self.media_ids or len(self.text) > 64
+        significant_content = self.media_ids or (self.text is not None and len(self.text) > 64)
 
         return ids_present and significant_content
 
