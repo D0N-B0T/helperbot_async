@@ -7,8 +7,8 @@ import redis
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from yastaba_message import Message
-from yastaba_helpers import tg_update_to_message
+from .yastaba_message import Message
+from .yastaba_helpers import tg_update_to_message
 
 redis_host = os.environ.get("APP_REDIS_HOST", "127.0.0.1")
 redis_port = int(os.environ.get("APP_REDIS_PORT", "6379"))
