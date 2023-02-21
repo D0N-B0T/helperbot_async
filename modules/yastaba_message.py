@@ -31,9 +31,11 @@ class Message(BaseModel):
         object.__setattr__(self, "chat_id", self.__chat_id())
         object.__setattr__(self, "fingerprint", self.__gen_fingerprint())
 
+
     def __chat_id(self) -> int:
         if self.channel_id is None:
-            raise ValueError("channel_id is None/empty, maybe user edited message?")
+            logging.debug("No channel_id, returning 0")
+            return 0
         return int(str(self.channel_id).replace("-100", ""))
 
     def __gen_fingerprint(self) -> str:
