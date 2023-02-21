@@ -17,7 +17,7 @@ r = redis.Redis(host=redis_host, port=redis_port, decode_responses=True)
 
 
 async def response(update: Update, ref_message: Message, emoji: str = "Yastaba ctm") -> None:
-    text = f"Yastaba CTM https://t.me/c/{ref_message.chat_id}/{ref_message.message_id} by @{ref_message.from_username}"
+    text = f"Yastaba CTM https://t.me/c/{ref_message.chat_id}/{ref_message.message_id}"
     logging.debug(text)
 
     await update.message.reply_text(text)
