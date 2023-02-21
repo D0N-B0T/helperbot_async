@@ -13,11 +13,13 @@ from telegram.constants import ParseMode
 from telegram.ext import ChatMemberHandler, CommandHandler, ContextTypes
 
 import config
+
 from modules.twitter import send_twitter_video
 from modules.facebook import send_facebook_video_reel, send_facebook_video_watch
 from modules.tiktok import main_url_dl
 from modules.instagram import send_instagram_video
 #import modulox.wayback  as wayback
+from yastaba.main import process
 
 if not os.path.exists(f"{config.main_directory}/db"):
     os.makedirs(f"{config.main_directory}/db")
@@ -26,8 +28,6 @@ persistence = PicklePersistence(filepath=f'{config.main_directory}/db/persistenc
 application = ApplicationBuilder().token(config.BOT_TOKEN).persistence(persistence).build()
 
 # = ============================  bienvenida ============================ #
-
-
 def extract_status_change(chat_member_update: ChatMemberUpdated) -> Optional[Tuple[bool, bool]]:
 
     status_change = chat_member_update.difference().get("status")
@@ -57,10 +57,8 @@ async def track_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         return
     was_member, is_member = result
 
-    # Let's check who is responsible for the change
     cause_name = update.effective_user.full_name
 
-    # Handle chat types differently:
     chat = update.effective_chat
     if chat.type == Chat.PRIVATE:
         if not was_member and is_member:
@@ -95,14 +93,14 @@ async def greet_chat_members(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     if not was_member and is_member:
         if member_name == cause_name:
-            await update.effective_chat.send_message(f"{member_name} se ha unido al grupo. Bienvenido!\nPor favor indique su nombre de usuario de El Antro.", parse_mode=ParseMode.HTML)
+            await update.effective_chat.send_message(f"{member_name} se ha unido al grupo. Bienvenido!\nPor favor indique su nombre de usuario de El Antro.\n\n\n¿Café con o sin azucar?", parse_mode=ParseMode.HTML)
         else:
-            await update.effective_chat.send_message(f"{member_name} fue añadido por {cause_name}. Bienvenido!\nPor favor indique su nombre de usuario de El Antro. ",parse_mode=ParseMode.HTML)
+            await update.effective_chat.send_message(f"{member_name} fue añadido por {cause_name}. Bienvenido!\nPor favor indique su nombre de usuario de El Antro.\n\n\n¿Café con o sin azucar?",parse_mode=ParseMode.HTML)
     elif was_member and not is_member:
         if member_name == cause_name:
-            await update.effective_chat.send_message(f"{member_name} ya no quiere estar en El Grupazo. ¿volverá algún día?", parse_mode=ParseMode.HTML)
+            await update.effective_chat.send_message(f"{member_name} ha abandonado El Grupazo. \n¿Volverá algún día?", parse_mode=ParseMode.HTML)
         else:
-            await update.effective_chat.send_message(f"{member_name} fue expulsado por {cause_name}. \nNo falta el weon que se pone tonto xD.", parse_mode=ParseMode.HTML)
+            await update.effective_chat.send_message(f"{member_name} fue expulsado por {cause_name}. \n Razón: 'Por Maraca'.", parse_mode=ParseMode.HTML)
 
 
 
@@ -181,24 +179,7 @@ def checkDivisas(mensaje):
     else:
         return False
 
-async def divisas(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.message:
-        with open('symbols.txt', 'r') as r:
-            if update.message.text.startswith("/"+r.read().strip()):
-                response = requests.get("https://www.cryptomkt.com/api/landing/ticker")
-                logger.info("Estado de la API: " + str(response.status_code))
-                data = response.json()
 
-                for item in data:
-                    if item["symbol"] == update.message.text.strip():
-                        symbol = item['symbol']
-                        timestamp = dt.datetime.strptime(item['timestamp'], '%Y-%m-%dT%H:%M:%S.%fZ').strftime("%d-%m-%Y %H:%M")
-                        last = item['last']
-                        high = item['high']
-                await update.message.reply_text('<b>'+symbol+'</b>'+'\n'+'Último: $'+str(last)+'\n'+'Máximo: $'+str(high)+'\n'+'Hora: '+str(timestamp)+'\n'+'IrinaExchangeRates 📡', parse_mode="HTML")
-    else:
-        logger.error("Hay un problema con la funcion checkDivisas()")
-        pass
 
 
 # = ============================  video ============================ #    
@@ -442,10 +423,8 @@ async def venecosqls(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def archivazo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         archive_args = update.message.text
-        trycommmand = archive_args
         archive_args = archive_args.split()
         archive_args = archive_args[1]
-        args = archive_args
         await context.bot.send_message(chat_id=update.effective_chat.id, text='Enviado al Archivazo.')
         
         
@@ -495,30 +474,6 @@ async def say_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=update.message.message_id)
 
 
-# ============================  experimental ============================ #
-
-
-async def show_chats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Shows which chats the bot is in"""
-    user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
-    group_ids = ", ".join(str(gid) for gid in context.bot_data.setdefault("group_ids", set()))
-    channel_ids = ", ".join(str(cid) for cid in context.bot_data.setdefault("channel_ids", set()))
-    text = (
-        f"@{context.bot.username} is currently in:\n"
-        f"{len(context.bot_data['channel_ids'])} channels, \n"
-        f"{len(context.bot_data['group_ids'])} groups, \n"
-        f"{len(context.bot_data['user_ids'])} private chats, \n"
-        f"Private chat with: {user_ids} \n"
-        f"Group IDs: {group_ids} \n"
-        f"Channel IDs: {channel_ids}.\n"
-    )
-    await update.effective_message.reply_text(text)
-
-
-
-
-
-
 # =======================================================================================
 
 if __name__ == '__main__':    
@@ -527,9 +482,7 @@ if __name__ == '__main__':
 
     link_downloader_handler = MessageHandler(filters.TEXT, link_downloader)
     application.add_handler(link_downloader_handler)
-    
-    divisas_handler = MessageHandler(filters.TEXT, divisas)
-    application.add_handler(divisas_handler)
+
     
     help_handler = CommandHandler('help', help)
     application.add_handler(help_handler, 4)
@@ -549,7 +502,6 @@ if __name__ == '__main__':
     
     
     # add handlers for the videos y audios part
-    
     
     sipoapruebo_handler = CommandHandler('sipoapruebo', sipoapruebo)
     application.add_handler(sipoapruebo_handler, 10)
@@ -674,25 +626,20 @@ if __name__ == '__main__':
     send_vistipuntos_handler =  CommandHandler('vistipuntos', vistipuntos)
     application.add_handler(send_vistipuntos_handler, 49)
     
-    send_clean_handler = CommandHandler('clean', clean)
-    application.add_handler(send_clean_handler, 50)
+
     
     send_say_handler = CommandHandler('say', say_command)
     application.add_handler(send_say_handler, 51)
     
     
-    show_chats_handler = CommandHandler('show_chats', show_chats)
-    application.add_handler(show_chats_handler, 52)
-        
-    send_sapo_handler = CommandHandler('sapo', send_sapo)
-    application.add_handler(send_sapo_handler, 53)
-        
-    application.add_handler(CommandHandler("show_chats", show_chats))
+
+    
     application.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
-
-
     application.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
     
+    
+    send_sapo_handler = CommandHandler('sapo', send_sapo)
+    application.add_handler(send_sapo_handler, 53)
     
     venecosqls_handler = CommandHandler('venecosqls', venecosqls)
     application.add_handler(venecosqls_handler, 54)
@@ -700,7 +647,16 @@ if __name__ == '__main__':
     pengu2_handler = CommandHandler('pengu2', pengu2)
     application.add_handler(pengu2_handler, 55)
     
-    convertusd_handler = CommandHandler('cusd', convertusd)
-    application.add_handler(convertusd_handler, 56)
+    
+    # YASTABEO APP
+    to_process_filters = filters.TEXT | filters.PHOTO | filters.AUDIO | filters.VIDEO | filters.FORWARDED
+    application.add_handler(MessageHandler(to_process_filters, process))
+
+
+
+
+
+
+
     
 application.run_polling(allowed_updates=Update.ALL_TYPES)
