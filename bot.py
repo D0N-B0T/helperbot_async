@@ -126,12 +126,8 @@ async def twitter_to_nitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def nitterc(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-
-
+        new_url = update.message.text.replace('/nitter', '')
         new_url = update.message.text.replace('https://twitter.com/', 'https://nitter.net/')
-        if new_url.startswith('/nitter'):
-            new_url = new_url.replace('/nitter', '')
-                      
         await context.bot.send_message(chat_id=update.effective_chat.id, text=new_url)
 
 
