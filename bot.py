@@ -510,6 +510,10 @@ if __name__ == '__main__':
     twitter_to_nitter_handler = MessageHandler(filters.TEXT, twitter_to_nitter)
     application.add_handler(twitter_to_nitter_handler, 5)
     
+    nitterc_handler = CommandHandler('nitter', nitterc)
+    application.add_handler(nitterc_handler, 72)
+    
+    
     
     # add handlers for the videos y audios part
     
@@ -657,8 +661,8 @@ if __name__ == '__main__':
     
     
     # YASTABEO APP
-    #to_process_filters = filters.TEXT | filters.PHOTO | filters.AUDIO | filters.VIDEO | filters.FORWARDED
-    to_process_filters = filters.TEXT | filters.PHOTO | filters.VIDEO | filters.FORWARDED
+    to_process_filters = filters.TEXT | filters.PHOTO | filters.AUDIO | filters.VIDEO | filters.FORWARDED
+    #to_process_filters = filters.TEXT | filters.PHOTO | filters.VIDEO | filters.FORWARDED
     application.add_handler(MessageHandler(to_process_filters, process))
 
 
