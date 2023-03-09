@@ -120,7 +120,15 @@ async def twitter_to_nitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if i.strip() in update.message.text.strip():
                     await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text.replace('https://twitter.com/', 'https://nitter.net/'))       
                     pass
-            
+
+# /nitter command 
+
+
+async def nitterc(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text.replace('https://twitter.com/', 'https://nitter.net/'))       
+
+
 # dolar command
     
 async def usd_to_clp(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -529,8 +537,6 @@ if __name__ == '__main__':
     send_guatona_handler = CommandHandler('guatona', send_guatona)
     application.add_handler(send_guatona_handler, 17)
     
-    #  = CommandHandler('señales', send_senales)
-    # application.add_handler(send_senales_handler, 18)
     
     send_senales_handler = MessageHandler(filters.TEXT, send_senales)
     application.add_handler(send_senales_handler, 18)
@@ -651,7 +657,8 @@ if __name__ == '__main__':
     
     
     # YASTABEO APP
-    to_process_filters = filters.TEXT | filters.PHOTO | filters.AUDIO | filters.VIDEO | filters.FORWARDED
+    #to_process_filters = filters.TEXT | filters.PHOTO | filters.AUDIO | filters.VIDEO | filters.FORWARDED
+    to_process_filters = filters.TEXT | filters.PHOTO | filters.VIDEO | filters.FORWARDED
     application.add_handler(MessageHandler(to_process_filters, process))
 
 
