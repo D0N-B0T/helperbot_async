@@ -115,10 +115,13 @@ async def twitter_to_nitter(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         with open('blacklist.txt', 'r') as a:
             lista = a.readlines()
+        link_found= False
         if re.search(twitter_reg, update.message.text):
             for i in lista:
                 if i.strip() in update.message.text.strip():
-                    await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text.replace('https://twitter.com/', 'https://nitter.net/'))       
+                    if not link_found:
+                        await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text.replace('https://twitter.com/', 'https://nitter.net/'))       
+                        link_found = True
                     pass
 
 # /nitter command 
@@ -227,11 +230,17 @@ async def link_downloader(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # add command
 async def add_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
-        arg = update.message.text
-        with open('blacklist.txt', 'a') as a:
-            a.write(arg.replace('/add ', '') + '\n')       
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Agregado a la lista")
+        arg = update.message.text        
+        twurl  = arg.replace('/add ', '')
         
+        with open('blacklist.txt', 'r') as f:
+            if twurl in f.read():
+                print("El enlace ya está en la lista.")
+            else:
+                with open('blacklist.txt', 'a') as f:
+                    f.write('\n' + twurl)
+                print("El enlace se ha agregado a la lista.")
+
 # ids comand
 async def get_ids(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
