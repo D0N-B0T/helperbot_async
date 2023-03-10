@@ -255,6 +255,9 @@ async def compadre(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         await context.bot.send_video(chat_id=update.effective_chat.id, video=open('videos/COMPADRELASTETAS.mp4', 'rb'), supports_streaming=True)
 
+async def satanas(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        await context.bot.send_video(chat_id=update.effective_chat.id, video=open('videos/satanas.mp4', 'rb'), supports_streaming=True)
 
 async def pengu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
@@ -625,6 +628,9 @@ if __name__ == '__main__':
     
     send_respeto_handler = CommandHandler('respeto', respeto)
     application.add_handler(send_respeto_handler, 44)
+    
+    send_satanas_handler = CommandHandler('satanas', satanas)
+    application.add_handler(send_satanas_handler, 452)
     
     send_merluzo_handler = CommandHandler('merluzo', merluzo)
     application.add_handler(send_merluzo_handler, 45)
